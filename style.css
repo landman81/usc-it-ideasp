@@ -8,11 +8,39 @@ header {
   background: #1f2937;
   color: white;
   padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  flex: 1;
+}
+
+header button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+header button:hover {
+  background: #1d4ed8;
 }
 
 textarea {
   width: 100%;
   height: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 button {
@@ -22,6 +50,76 @@ button {
   padding: 8px 12px;
   cursor: pointer;
   margin-top: 5px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+#googleLoginBtn, #googleLoginBtn2 {
+  width: 100%;
+  margin: 10px 0;
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 10px;
+}
+
+#googleLoginBtn:hover, #googleLoginBtn2:hover {
+  background: #f0f0f0;
+}
+
+#signupTab, #loginTab {
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+}
+
+#signupTab.active, #loginTab.active {
+  border-bottom: 3px solid #2563eb;
+  color: #2563eb;
+}
+
+#submitIdea {
+  background: #4CAF50;
+  color: white;
+}
+
+#submitIdea:hover {
+  background: #45a049;
+}
+
+#signupBtn {
+  background: #4CAF50;
+}
+
+#signupBtn:hover {
+  background: #45a049;
+}
+
+#loginSubmitBtn {
+  background: #2196F3;
+}
+
+#loginSubmitBtn:hover {
+  background: #0b7dda;
+}
+
+#closeModal {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+}
+
+#closeModal:hover {
+  color: #333;
 }
 
 .idea {
@@ -29,4 +127,65 @@ button {
   padding: 10px;
   margin: 10px 0;
   border-left: 5px solid #2563eb;
+}
+
+.idea-card {
+  background: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-left: 5px solid #2563eb;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.idea-card p {
+  margin: 5px 0;
+}
+
+.idea-actions {
+  margin-top: 10px;
+}
+
+.vote-btn {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.vote-btn:hover {
+  background: #e0e0e0;
+}
+
+section {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 10px;
+}
+
+#postIdea {
+  display: none;
+}
+
+#postIdea textarea {
+  margin-bottom: 10px;
+}
+
+input[type="email"], input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
 }
