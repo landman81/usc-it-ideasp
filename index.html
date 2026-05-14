@@ -7,7 +7,7 @@
 <body>
   <header>
     <h1>USC Division of IT — Idea Portal</h1>
-    <button id="loginBtn">Login with USC Email</button>
+    <button id="loginBtn">Login / Sign Up</button>
   </header>
 
   <section id="postIdea">
@@ -17,44 +17,45 @@
 
   <section id="ideasList"></section>
 
-<script type="module" src="app.js"></script>
   <!-- Auth Modal -->
-<div id="authModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-  <div style="background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 400px;">
-    <button id="closeModal" style="float: right; background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
-    
-    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd;">
-      <button id="signupTab" style="flex: 1; padding: 10px; background: none; border: none; cursor: pointer; border-bottom: 3px solid blue; font-size: 16px;">Sign Up</button>
-      <button id="loginTab" style="flex: 1; padding: 10px; background: none; border: none; cursor: pointer; font-size: 16px;">Log In</button>
-    </div>
-
-    <!-- Signup Form -->
-    <div id="signupForm">
-      <h2>Create Account</h2>
-      <input id="signupEmail" type="email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-      <input id="signupPassword" type="password" placeholder="Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-      <input id="signupConfirmPassword" type="password" placeholder="Confirm Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-      <button id="signupBtn" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Sign Up</button>
+  <div id="authModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 400px;">
+      <button id="closeModal" style="float: right; background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
       
-      <div style="margin-top: 20px; text-align: center;">
-        <p style="color: #666;">Or sign in with:</p>
-        <button id="googleLoginBtn" style="width: 100%; padding: 10px; margin: 10px 0; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">🔵 Google</button>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd;">
+        <button id="signupTab" style="flex: 1; padding: 10px; background: none; border: none; cursor: pointer; border-bottom: 3px solid blue; font-size: 16px;">Sign Up</button>
+        <button id="loginTab" style="flex: 1; padding: 10px; background: none; border: none; cursor: pointer; font-size: 16px;">Log In</button>
       </div>
-    </div>
 
-    <!-- Login Form -->
-    <div id="loginForm" style="display: none;">
-      <h2>Log In</h2>
-      <input id="loginEmail" type="email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-      <input id="loginPassword" type="password" placeholder="Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-      <button id="loginSubmitBtn" style="width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Log In</button>
-      
-      <div style="margin-top: 20px; text-align: center;">
-        <p style="color: #666;">Or sign in with:</p>
-        <button id="googleLoginBtn2" style="width: 100%; padding: 10px; margin: 10px 0; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">🔵 Google</button>
+      <!-- Signup Form -->
+      <div id="signupForm">
+        <h2>Create Account</h2>
+        <input id="signupEmail" type="email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        <input id="signupPassword" type="password" placeholder="Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        <input id="signupConfirmPassword" type="password" placeholder="Confirm Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        <button id="signupBtn" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Sign Up</button>
+        
+        <div style="margin-top: 20px; text-align: center;">
+          <p style="color: #666;">Or sign in with:</p>
+          <button id="googleLoginBtn" style="width: 100%; padding: 10px; margin: 10px 0; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">🔵 Google</button>
+        </div>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" style="display: none;">
+        <h2>Log In</h2>
+        <input id="loginEmail" type="email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        <input id="loginPassword" type="password" placeholder="Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        <button id="loginSubmitBtn" style="width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Log In</button>
+        
+        <div style="margin-top: 20px; text-align: center;">
+          <p style="color: #666;">Or sign in with:</p>
+          <button id="googleLoginBtn2" style="width: 100%; padding: 10px; margin: 10px 0; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">🔵 Google</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
