@@ -36,6 +36,8 @@ loginBtn.addEventListener("click", () => {
   } else {
     // User is not logged in, so login
     const provider = new GoogleAuthProvider();
+    // Force account picker to show every time
+    provider.setCustomParameters({ prompt: 'select_account' });
     signInWithPopup(auth, provider);
   }
 });
