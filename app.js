@@ -19,4 +19,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Initialize Analytics (commented out if causing issues)
+try {
+  const analytics = getAnalytics(app);
+} catch (error) {
+  console.log("Analytics initialization skipped:", error.message);
+}
