@@ -1,7 +1,7 @@
 // Import the functions I need from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -21,6 +21,7 @@ const auth = getAuth(app);
 
 // Get HTML elements
 const loginBtn = document.getElementById("loginBtn");
+const microsoftLoginBtn = document.getElementById("microsoftLoginBtn");
 const submitIdeaBtn = document.getElementById("submitIdea");
 const ideaTextarea = document.getElementById("ideaText");
 const ideasListSection = document.getElementById("ideasList");
@@ -28,13 +29,13 @@ const postIdeaSection = document.getElementById("postIdea");
 
 let currentUser = null;
 
-// Handle login/logout button click (combined handler)
+// Handle Google login/logout button click
 loginBtn.addEventListener("click", () => {
   if (currentUser) {
     // User is logged in, so logout
     signOut(auth);
   } else {
-    // User is not logged in, so login
+    // User is not logged in, so login with Google
     const provider = new GoogleAuthProvider();
     // Force account picker to show every time
     provider.setCustomParameters({ prompt: 'select_account' });
@@ -42,14 +43,41 @@ loginBtn.addEventListener("click", () => {
   }
 });
 
+// Handle Microsoft login button click
+if (microsoftLoginBtn) {
+  microsoftLoginBtn.addEventListener("click", () => {
+    if (currentUser) {
+      // User is logged in, so logout
+      signOut(auth);
+    } else {
+      // User is not logged in, so login with Microsoft
+      const provider = new OAuthProvider('microsoft.com');
+      provider.addScopes('mail.read', 'calendar.read');
+      // Restrict to USC Microsoft accounts (optional)
+      provider.setCustomParameters({
+        prompt: 'select_account',
+        tenant: 'organizations' // Forces organizational accounts
+      });
+      signInWithPopup(auth, provider);
+    }
+  });
+}
+
 // Track auth state changes
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
+    const providerID = user.providerData[0]?.providerId || 'unknown';
     loginBtn.textContent = `Logout (${user.email})`;
+    if (microsoftLoginBtn) {
+      microsoftLoginBtn.textContent = `Logout (${user.email})`;
+    }
     postIdeaSection.style.display = "block";
   } else {
-    loginBtn.textContent = "Login with USC Email";
+    loginBtn.textContent = "Login with Google";
+    if (microsoftLoginBtn) {
+      microsoftLoginBtn.textContent = "Login with Microsoft";
+    }
     postIdeaSection.style.display = "none";
   }
 });
