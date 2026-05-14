@@ -1,5 +1,5 @@
 // Import the functions I need from the SDKs you need
-import { initializeApp, getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -19,10 +19,3 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Analytics (commented out if causing issues)
-try {
-  const analytics = getAnalytics(app);
-} catch (error) {
-  console.log("Analytics initialization skipped:", error.message);
-}
