@@ -28,10 +28,16 @@ const postIdeaSection = document.getElementById("postIdea");
 
 let currentUser = null;
 
-// Login with Google
+// Handle login/logout button click (combined handler)
 loginBtn.addEventListener("click", () => {
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider);
+  if (currentUser) {
+    // User is logged in, so logout
+    signOut(auth);
+  } else {
+    // User is not logged in, so login
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider);
+  }
 });
 
 // Track auth state changes
@@ -43,13 +49,6 @@ onAuthStateChanged(auth, (user) => {
   } else {
     loginBtn.textContent = "Login with USC Email";
     postIdeaSection.style.display = "none";
-  }
-});
-
-// Handle login/logout button toggle
-loginBtn.addEventListener("click", () => {
-  if (currentUser) {
-    signOut(auth);
   }
 });
 
