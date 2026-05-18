@@ -78,6 +78,7 @@ button:hover {
   padding: 10px;
   background: none;
   border: none;
+  transition: all 0.2s;
 }
 
 #signupTab.active, #loginTab.active {
@@ -110,7 +111,23 @@ button:hover {
   background: #0b7dda;
 }
 
-#closeModal {
+#saveEditBtn {
+  background: #4CAF50;
+}
+
+#saveEditBtn:hover {
+  background: #45a049;
+}
+
+#saveDisplayNameBtn {
+  background: #2196F3;
+}
+
+#saveDisplayNameBtn:hover {
+  background: #0b7dda;
+}
+
+#closeModal, #closeEditModal, #closeDisplayNameModal {
   background: none;
   border: none;
   font-size: 24px;
@@ -118,7 +135,7 @@ button:hover {
   color: #999;
 }
 
-#closeModal:hover {
+#closeModal:hover, #closeEditModal:hover, #closeDisplayNameModal:hover {
   color: #333;
 }
 
@@ -144,9 +161,12 @@ button:hover {
 
 .idea-actions {
   margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.vote-btn {
+.vote-btn, .edit-btn, .delete-btn {
   background: #f0f0f0;
   color: #333;
   border: 1px solid #ddd;
@@ -160,10 +180,18 @@ button:hover {
   background: #e0e0e0;
 }
 
+.edit-btn:hover, .delete-btn:hover {
+  background: #e8e8e8;
+}
+
 section {
   max-width: 600px;
   margin: 20px auto;
   padding: 0 10px;
+}
+
+section h2 {
+  margin-top: 0;
 }
 
 #postIdea {
@@ -174,7 +202,7 @@ section {
   margin-bottom: 10px;
 }
 
-input[type="email"], input[type="password"] {
+input[type="email"], input[type="password"], input[type="text"] {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -184,7 +212,7 @@ input[type="email"], input[type="password"] {
   font-size: 16px;
 }
 
-input[type="email"]:focus, input[type="password"]:focus {
+input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
