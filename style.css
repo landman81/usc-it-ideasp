@@ -18,6 +18,12 @@ header h1 {
   flex: 1;
 }
 
+header div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 header button {
   background: #2563eb;
   color: white;
@@ -27,10 +33,19 @@ header button {
   border-radius: 4px;
   font-size: 16px;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 header button:hover {
   background: #1d4ed8;
+}
+
+#changeDisplayNameBtn {
+  background: #0084d4 !important;
+}
+
+#changeDisplayNameBtn:hover {
+  background: #0056b3 !important;
 }
 
 textarea {
@@ -41,6 +56,7 @@ textarea {
   border-radius: 4px;
   font-family: Arial, sans-serif;
   box-sizing: border-box;
+  resize: vertical;
 }
 
 button {
@@ -52,6 +68,7 @@ button {
   margin-top: 5px;
   border-radius: 4px;
   font-size: 16px;
+  transition: background 0.2s;
 }
 
 button:hover {
@@ -59,31 +76,35 @@ button:hover {
 }
 
 #googleLoginBtn, #googleLoginBtn2 {
-  width: 100%;
-  margin: 10px 0;
-  background: white;
-  border: 1px solid #ddd;
-  color: #333;
-  padding: 10px;
+  width: 100% !important;
+  margin: 10px 0 !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  color: #333 !important;
+  padding: 10px !important;
+  margin-top: 0 !important;
 }
 
 #googleLoginBtn:hover, #googleLoginBtn2:hover {
-  background: #f0f0f0;
+  background: #f0f0f0 !important;
 }
 
-#signupTab, #loginTab {
+.auth-tab {
   font-weight: bold;
   color: #333;
   cursor: pointer;
   padding: 10px;
-  background: none;
-  border: none;
+  background: none !important;
+  border: none !important;
   transition: all 0.2s;
+  font-size: 16px;
+  margin: 0 !important;
+  margin-top: 0 !important;
 }
 
-#signupTab.active, #loginTab.active {
-  border-bottom: 3px solid #2563eb;
-  color: #2563eb;
+.auth-tab.active {
+  border-bottom: 3px solid #2563eb !important;
+  color: #2563eb !important;
 }
 
 #submitIdea {
@@ -97,6 +118,7 @@ button:hover {
 
 #signupBtn {
   background: #4CAF50;
+  margin-top: 0;
 }
 
 #signupBtn:hover {
@@ -105,6 +127,7 @@ button:hover {
 
 #loginSubmitBtn {
   background: #2196F3;
+  margin-top: 0;
 }
 
 #loginSubmitBtn:hover {
@@ -113,6 +136,8 @@ button:hover {
 
 #saveEditBtn {
   background: #4CAF50;
+  width: 100%;
+  margin-top: 15px;
 }
 
 #saveEditBtn:hover {
@@ -121,6 +146,8 @@ button:hover {
 
 #saveDisplayNameBtn {
   background: #2196F3;
+  width: 100%;
+  margin-top: 15px;
 }
 
 #saveDisplayNameBtn:hover {
@@ -128,11 +155,14 @@ button:hover {
 }
 
 #closeModal, #closeEditModal, #closeDisplayNameModal {
-  background: none;
-  border: none;
+  background: none !important;
+  border: none !important;
   font-size: 24px;
   cursor: pointer;
   color: #999;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
 }
 
 #closeModal:hover, #closeEditModal:hover, #closeDisplayNameModal:hover {
@@ -174,6 +204,9 @@ button:hover {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  margin: 0;
+  margin-top: 5px;
+  transition: background 0.2s;
 }
 
 .vote-btn:hover {
@@ -192,6 +225,7 @@ section {
 
 section h2 {
   margin-top: 0;
+  color: #1f2937;
 }
 
 #postIdea {
@@ -202,7 +236,9 @@ section h2 {
   margin-bottom: 10px;
 }
 
-input[type="email"], input[type="password"], input[type="text"] {
+input[type="email"],
+input[type="password"],
+input[type="text"] {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -212,7 +248,9 @@ input[type="email"], input[type="password"], input[type="text"] {
   font-size: 16px;
 }
 
-input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
