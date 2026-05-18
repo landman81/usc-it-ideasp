@@ -1,6 +1,6 @@
 // Import the functions I need from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, deleteDoc, setDoc, getDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
@@ -13,6 +13,9 @@ const firebaseConfig = {
   appId: "1:754003756286:web:0ac230fa79d642e25451af",
   measurementId: "G-25K8Z5MHC9"
 };
+
+// Admin email - change this to your email for full access
+const ADMIN_EMAIL = "lwevans@email.sc.edu";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -49,8 +52,7 @@ const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 
 // Edit Idea Modal elements
 const editIdeaModal = document.getElementById("editIdeaModal");
-const closeEditModal = document.getElementById("closeEditModal");
-const editIdeaText = document.getElementById("editIdeaText");
+const closeEditModal = document.getElementById("closeEditModal");\nconst editIdeaText = document.getElementById("editIdeaText");
 const saveEditBtn = document.getElementById("saveEditBtn");
 let currentEditingIdeaId = null;
 
@@ -62,6 +64,7 @@ const saveDisplayNameBtn = document.getElementById("saveDisplayNameBtn");
 
 let currentUser = null;
 let currentDisplayName = null;
+let isAdmin = false;
 
 // Modal functions
 function openAuthModal() {
@@ -232,10 +235,12 @@ saveDisplayNameBtn.addEventListener("click", async () => {
 });
 
 // Handle change display name button
-changeDisplayNameBtn.addEventListener("click", () => {
-  displayNameInput.value = currentDisplayName || "";
-  displayNameModal.style.display = "flex";
-});
+if (changeDisplayNameBtn) {
+  changeDisplayNameBtn.addEventListener("click", () => {
+    displayNameInput.value = currentDisplayName || "";
+    displayNameModal.style.display = "flex";
+  });
+}
 
 // Handle login button
 loginBtn.addEventListener("click", () => {
@@ -250,6 +255,9 @@ loginBtn.addEventListener("click", () => {
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if (user) {
+    // Check if user is admin
+    isAdmin = user.email === ADMIN_EMAIL;
+    
     // Get user's display name from Firestore
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
@@ -259,12 +267,17 @@ onAuthStateChanged(auth, async (user) => {
     }
     
     loginBtn.textContent = `Logout (${user.email})`;
-    changeDisplayNameBtn.style.display = "inline-block";
+    if (changeDisplayNameBtn) {
+      changeDisplayNameBtn.style.display = "inline-block";
+    }
     postIdeaSection.style.display = "block";
   } else {
     currentDisplayName = null;
+    isAdmin = false;
     loginBtn.textContent = "Login / Sign Up";
-    changeDisplayNameBtn.style.display = "none";
+    if (changeDisplayNameBtn) {
+      changeDisplayNameBtn.style.display = "none";
+    }
     postIdeaSection.style.display = "none";
   }
 });
@@ -289,7 +302,10 @@ submitIdeaBtn.addEventListener("click", async () => {
       author: currentUser.email,
       authorName: currentDisplayName || "Anonymous",
       timestamp: new Date(),
-      votes: 0
+      upvotes: 0,
+      downvotes: 0,
+      upvoters: [],
+      downvoters: []
     });
     ideaTextarea.value = "";
   } catch (error) {
@@ -306,13 +322,19 @@ onSnapshot(collection(db, "ideas"), (snapshot) => {
     const idea = docSnap.data();
     const ideaId = docSnap.id;
     const isOwnIdea = currentUser && currentUser.uid === idea.authorId;
+    const isAdminUser = isAdmin;
+    const hasUpvoted = currentUser && idea.upvoters && idea.upvoters.includes(currentUser.uid);
+    const hasDownvoted = currentUser && idea.downvoters && idea.downvoters.includes(currentUser.uid);
     
     const ideaDiv = document.createElement("div");
     ideaDiv.className = "idea-card";
     
-    let actionsHTML = `<button class="vote-btn" data-id="${ideaId}">👍 ${idea.votes || 0}</button>`;
+    let actionsHTML = `
+      <button class="vote-btn upvote-btn ${hasUpvoted ? 'voted' : ''}" data-id="${ideaId}" ${!currentUser ? 'disabled' : ''}>👍 ${idea.upvotes || 0}</button>
+      <button class="vote-btn downvote-btn ${hasDownvoted ? 'voted' : ''}" data-id="${ideaId}" ${!currentUser ? 'disabled' : ''}>👎 ${idea.downvotes || 0}</button>
+    `;
     
-    if (isOwnIdea) {
+    if (isOwnIdea || isAdminUser) {
       actionsHTML += `
         <button class="edit-btn" data-id="${ideaId}">✏️ Edit</button>
         <button class="delete-btn" data-id="${ideaId}">🗑️ Delete</button>
@@ -320,34 +342,104 @@ onSnapshot(collection(db, "ideas"), (snapshot) => {
     }
     
     ideaDiv.innerHTML = `
-      <p><strong>${idea.authorName}</strong> • ${idea.timestamp.toDate().toLocaleDateString()}</p>
-      <p>${idea.text}</p>
+      <p><strong>${idea.authorName}</strong> • ${idea.timestamp.toDate().toLocaleDateString()}</p>\n      <p>${idea.text}</p>
       <div class="idea-actions">
         ${actionsHTML}
       </div>
     `;
     
-    // Vote button
-    ideaDiv.querySelector(".vote-btn").addEventListener("click", async () => {
-      try {
-        await updateDoc(doc(db, "ideas", ideaId), {
-          votes: (idea.votes || 0) + 1
-        });
-      } catch (error) {
-        console.error("Error updating votes:", error);
-      }
-    });
+    // Upvote button
+    const upvoteBtn = ideaDiv.querySelector(".upvote-btn");
+    if (upvoteBtn) {
+      upvoteBtn.addEventListener("click", async () => {
+        if (!currentUser) {
+          alert("Please login to vote");
+          return;
+        }
+        
+        try {
+          if (hasUpvoted) {
+            // Remove upvote
+            await updateDoc(doc(db, "ideas", ideaId), {
+              upvotes: Math.max(0, (idea.upvotes || 1) - 1),
+              upvoters: arrayRemove(currentUser.uid)
+            });
+          } else {
+            // Add upvote and remove downvote if exists
+            const newUpvoters = [...(idea.upvoters || [])];
+            if (!newUpvoters.includes(currentUser.uid)) {
+              newUpvoters.push(currentUser.uid);
+            }
+            
+            const newDownvoters = (idea.downvoters || []).filter(id => id !== currentUser.uid);
+            const downvoteChange = idea.downvoters && idea.downvoters.includes(currentUser.uid) ? -1 : 0;
+            
+            await updateDoc(doc(db, "ideas", ideaId), {
+              upvotes: (idea.upvotes || 0) + 1,
+              downvotes: Math.max(0, (idea.downvotes || 0) + downvoteChange),
+              upvoters: newUpvoters,
+              downvoters: newDownvoters
+            });
+          }
+        } catch (error) {
+          console.error("Error updating upvote:", error);
+        }
+      });
+    }
+    
+    // Downvote button
+    const downvoteBtn = ideaDiv.querySelector(".downvote-btn");
+    if (downvoteBtn) {
+      downvoteBtn.addEventListener("click", async () => {
+        if (!currentUser) {
+          alert("Please login to vote");
+          return;
+        }
+        
+        try {
+          if (hasDownvoted) {
+            // Remove downvote
+            await updateDoc(doc(db, "ideas", ideaId), {
+              downvotes: Math.max(0, (idea.downvotes || 1) - 1),
+              downvoters: arrayRemove(currentUser.uid)
+            });
+          } else {
+            // Add downvote and remove upvote if exists
+            const newDownvoters = [...(idea.downvoters || [])];
+            if (!newDownvoters.includes(currentUser.uid)) {
+              newDownvoters.push(currentUser.uid);
+            }
+            
+            const newUpvoters = (idea.upvoters || []).filter(id => id !== currentUser.uid);
+            const upvoteChange = idea.upvoters && idea.upvoters.includes(currentUser.uid) ? -1 : 0;
+            
+            await updateDoc(doc(db, "ideas", ideaId), {
+              downvotes: (idea.downvotes || 0) + 1,
+              upvotes: Math.max(0, (idea.upvotes || 0) + upvoteChange),
+              upvoters: newUpvoters,
+              downvoters: newDownvoters
+            });
+          }
+        } catch (error) {
+          console.error("Error updating downvote:", error);
+        }
+      });
+    }
     
     // Edit button
-    if (isOwnIdea) {
-      ideaDiv.querySelector(".edit-btn").addEventListener("click", () => {
+    const editBtn = ideaDiv.querySelector(".edit-btn");
+    if (editBtn) {
+      editBtn.addEventListener("click", () => {
         currentEditingIdeaId = ideaId;
         editIdeaText.value = idea.text;
         editIdeaModal.style.display = "flex";
       });
-      
-      // Delete button
-      ideaDiv.querySelector(".delete-btn").addEventListener("click", async () => {
+    }
+    
+    // Delete button
+    const deleteBtn = ideaDiv.querySelector(".delete-btn");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", async () => {
         if (confirm("Are you sure you want to delete this idea?")) {
           try {
             await deleteDoc(doc(db, "ideas", ideaId));
